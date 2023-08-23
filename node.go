@@ -46,7 +46,8 @@ type Node struct {
 	NamespaceURI string
 	Attr         []Attr
 
-	level int // node level in the tree
+	level      int // node level in the tree
+	SelfClosed bool
 }
 
 type outputConfiguration struct {
@@ -176,7 +177,7 @@ func outputXML(b *strings.Builder, n *Node, preserveSpaces bool, config *outputC
 	if n.Type == DeclarationNode {
 		b.WriteString("?>")
 	} else {
-		if n.FirstChild != nil || !config.emptyElementTagSupport {
+		if n.FirstChild != nil || (!config.emptyElementTagSupport && !n.SelfClosed) {
 			b.WriteString(">")
 		} else {
 			b.WriteString("/>")
